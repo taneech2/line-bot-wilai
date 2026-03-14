@@ -1,10 +1,10 @@
 # Build stage
-FROM node:22-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Enable corepack for pnpm
-RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
+# Install pnpm via npm
+RUN npm install -g pnpm@10.4.1
 
 # Copy package files and patches
 COPY package.json pnpm-lock.yaml ./
@@ -20,12 +20,12 @@ COPY . .
 RUN pnpm build
 
 # Production stage
-FROM node:22-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Enable corepack for pnpm
-RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
+# Install pnpm via npm
+RUN npm install -g pnpm@10.4.1
 
 # Copy package files from builder
 COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
