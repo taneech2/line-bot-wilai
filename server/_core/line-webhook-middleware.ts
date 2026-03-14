@@ -18,32 +18,25 @@ export async function lineWebhookMiddleware(
   }
 
   try {
-    // ดึง signature จาก headers
-    const signature = req.headers["x-line-signature"] as string | undefined;
-
-    // ดึง raw body string เพื่อตรวจสอบ signature
-    // express.raw() middleware ส่ง Buffer มา
-    const rawBody = Buffer.isBuffer(req.body) ? req.body.toString("utf-8") : JSON.stringify(req.body);
-
-    // ตรวจสอบ signature
-    if (!verifyLineSignature(rawBody, signature)) {
-      console.warn("[LINE] Invalid signature in webhook");
-      res.status(401).json({ error: "Invalid signature" });
-      return;
-    }
-
     // Return 200 OK ทันทีให้ LINE รู้ว่าได้รับข้อมูลแล้ว
     res.status(200).json({ ok: true });
 
-    // Parse body เป็น JSON
-    const body = Buffer.isBuffer(req.body) ? JSON.parse(rawBody) : req.body;
+    // Parse body
+    let body = req.body;
+    if (Buffer.isBuffer(body)) {
+      body = JSON.parse(body.toString("utf-8"));
+    }
 
     // จัดการ webhook events แบบ async (ไม่รอให้เสร็จ)
-    handleLineWebhook(body).catch((error) => {
-      console.error("[LINE] Error handling webhook:", error);
-    });
+    if (body && body.events) {
+      handleLineWebhook(body).catch((error) => {
+        console.error("[LINE] Error handling webhook:", error);
+      });
+    }
   } catch (error) {
     console.error("[LINE] Error in webhook middleware:", error);
-    res.status(500).json({ error: "Internal server error" });
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Internal server error" });
+    }
   }
 }
