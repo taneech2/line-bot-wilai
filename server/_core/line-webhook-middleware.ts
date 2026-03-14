@@ -22,9 +22,8 @@ export async function lineWebhookMiddleware(
     const signature = req.headers["x-line-signature"] as string | undefined;
 
     // ดึง raw body string เพื่อตรวจสอบ signature
-    // express.json() middleware ได้แปลง body เป็น object แล้ว
-    // ต้องเก็บ raw body string ก่อนที่ express.json() จะแปลง
-    const rawBody = JSON.stringify(req.body);
+    // express.raw() middleware ส่ง Buffer มา
+    const rawBody = Buffer.isBuffer(req.body) ? req.body.toString("utf-8") : JSON.stringify(req.body);
 
     // ตรวจสอบ signature
     if (!verifyLineSignature(rawBody, signature)) {
@@ -36,8 +35,11 @@ export async function lineWebhookMiddleware(
     // Return 200 OK ทันทีให้ LINE รู้ว่าได้รับข้อมูลแล้ว
     res.status(200).json({ ok: true });
 
+    // Parse body เป็น JSON
+    const body = Buffer.isBuffer(req.body) ? JSON.parse(rawBody) : req.body;
+
     // จัดการ webhook events แบบ async (ไม่รอให้เสร็จ)
-    handleLineWebhook(req.body).catch((error) => {
+    handleLineWebhook(body).catch((error) => {
       console.error("[LINE] Error handling webhook:", error);
     });
   } catch (error) {

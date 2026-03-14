@@ -30,12 +30,12 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  // LINE webhook - use raw body for signature verification
+  app.post("/api/line/webhook", express.raw({ type: "*/*" }), lineWebhookMiddleware);
+
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
-  
-  // LINE webhook endpoint - must be before tRPC middleware
-  app.post("/api/line/webhook", lineWebhookMiddleware);
   
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
