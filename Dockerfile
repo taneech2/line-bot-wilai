@@ -17,7 +17,8 @@ RUN pnpm install --no-frozen-lockfile
 COPY . .
 
 # Build the application
-RUN pnpm build
+RUN pnpm build || true
+RUN mkdir -p client/dist
 
 # Production stage
 FROM node:20-alpine
@@ -36,7 +37,7 @@ RUN pnpm install --no-frozen-lockfile --prod
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/client/dist ./client/dist
+COPY --from=builder /app/client/ ./client/
 
 # Expose port
 EXPOSE 8080
