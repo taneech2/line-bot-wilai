@@ -8,7 +8,7 @@ RUN npm install -g pnpm@10.4.1
 
 # Copy package files and patches
 COPY package.json pnpm-lock.yaml ./
-COPY patches ./patches
+COPY patches/ ./patches/
 
 # Install dependencies
 RUN pnpm install --no-frozen-lockfile
@@ -29,7 +29,7 @@ RUN npm install -g pnpm@10.4.1
 
 # Copy package files from builder
 COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
-COPY --from=builder /app/patches ./patches
+COPY --from=builder /app/patches/ ./patches/
 
 # Install production dependencies only
 RUN pnpm install --no-frozen-lockfile --prod
