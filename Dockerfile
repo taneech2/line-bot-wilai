@@ -32,8 +32,8 @@ RUN npm install -g pnpm@10.4.1
 COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
 COPY --from=builder /app/patches/ ./patches/
 
-# Install production dependencies only
-RUN pnpm install --no-frozen-lockfile --prod
+# Install all dependencies (vite is referenced in bundled code)
+RUN pnpm install --no-frozen-lockfile
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
