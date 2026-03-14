@@ -3,11 +3,15 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
+# Enable corepack for pnpm
+RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
+
+# Copy package files and patches
 COPY package.json pnpm-lock.yaml ./
+COPY patches ./patches
 
 # Install dependencies
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 # Copy source code
 COPY . .
@@ -20,20 +24,21 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Install pnpm in production image
-RUN npm install -g pnpm
+# Enable corepack for pnpm
+RUN corepack enable && corepack prepare pnpm@10.4.1 --activate
 
 # Copy package files from builder
 COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
+COPY --from=builder /app/patches ./patches
 
 # Install production dependencies only
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --no-frozen-lockfile --prod
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/client/dist ./client/dist
 
-# Expose port (Cloud Run uses PORT env variable)
+# Expose port
 EXPOSE 8080
 
 # Set environment variables
