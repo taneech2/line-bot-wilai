@@ -216,7 +216,7 @@ ${sheetSection}
 ตอบคำถามของผู้ใช้ด้วยบุคลิกนี้เสมอ`;
 
     // ใช้ Gemini API โดยตรงเพื่อเปิดใช้ Google Search grounding
-    const geminiApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+    const geminiApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent";
     const geminiApiKey = process.env.GEMINI_API_KEY;
     
     if (!geminiApiKey) {
