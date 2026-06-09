@@ -1,4 +1,4 @@
-# LINE Bot "คุยกับธานี" - Deployment Package
+# LINE Bot "เลขาครูธานี" - Deployment Package
 
 นี่คือแพ็คเจจ deploy ที่พร้อมใช้สำหรับ Google Cloud Run
 

@@ -1,6 +1,6 @@
-# LINE Bot "คุยกับธานี" - Google Cloud Run Deployment Guide
+# LINE Bot "เลขาครูธานี" - Google Cloud Run Deployment Guide
 
-บอทธานีพร้อม deploy บน Google Cloud Run เพื่อให้ทำงานตลอด 24 ชม.
+เลขาครูธานีพร้อม deploy บน Google Cloud Run เพื่อให้ทำงานตลอด 24 ชม.
 
 ## ข้อกำหนดเบื้องต้น
 

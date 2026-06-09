@@ -92,19 +92,19 @@ function getChatType(source: LineEvent["source"]): "user" | "group" | "room" | n
 }
 
 /**
- * ตรวจสอบว่าข้อความมีคำว่า "วิลัย" อยู่ด้วยหรือไม่
+ * ตรวจสอบว่าข้อความมีคำว่า "เลขาครูธานี" อยู่ด้วยหรือไม่
  * @param message ข้อความที่ต้องตรวจสอบ
- * @returns true ถ้ามีคำว่า "วิลัย" อยู่ด้วย
+ * @returns true ถ้ามีคำว่า "เลขาครูธานี" อยู่ด้วย
  */
 function containsWilaiKeyword(message: string): boolean {
-  // ตรวจสอบคำว่า "วิลัย" (case-insensitive)
-  return message.toLowerCase().includes("วิลัย");
+  // ตรวจสอบคำว่า "เลขาครูธานี" (case-insensitive)
+  return message.toLowerCase().includes("เลขาครูธานี");
 }
 
 /**
  * ตรวจสอบว่าควรตอบข้อความนี้หรือไม่
  * - ถ้าเป็นแชทส่วนตัว ตอบทุกข้อความ
- * - ถ้าเป็นกลุ่มหรือห้องแชท ตอบเฉพาะเมื่อมีคำว่า "วิลัย"
+ * - ถ้าเป็นกลุ่มหรือห้องแชท ตอบเฉพาะเมื่อมีคำว่า "เลขาครูธานี"
  */
 function shouldRespond(chatType: string | null, message: string): boolean {
   if (chatType === "user") {
@@ -113,7 +113,7 @@ function shouldRespond(chatType: string | null, message: string): boolean {
   }
   
   if (chatType === "group" || chatType === "room") {
-    // กลุ่มหรือห้องแชท - ตอบเฉพาะเมื่อมีคำว่า "วิลัย"
+    // กลุ่มหรือห้องแชท - ตอบเฉพาะเมื่อมีคำว่า "เลขาครูธานี"
     return containsWilaiKeyword(message);
   }
   
@@ -121,7 +121,7 @@ function shouldRespond(chatType: string | null, message: string): boolean {
 }
 
 /**
- * สร้างคำตอบจาก Gemini AI โดยใช้บุคลิก "วิลัย"
+ * สร้างคำตอบจาก Gemini AI โดยใช้บุคลิก "เลขาครูธานี"
  * @param userMessage ข้อความจากผู้ใช้
  * @param lineUserId LINE user/group ID สำหรับเรียกประวัติแชท
  */
@@ -131,10 +131,10 @@ async function generateResponse(userMessage: string, lineUserId: string): Promis
     const sheetData = await fetchGoogleSheetData();
     const sheetSection = sheetData ? `\n\n## ข้อมูลล่าสุดจาก Google Sheets (ฐานข้อมูลวิทยาลัย)\n${sheetData}` : "";
 
-    const systemPrompt = `คุณคือ "วิลัย" ผู้ช่วยเสมือนจริงของวิทยาลัยการอาชีพบุรีรัมย์ มีบุคลิกดังนี้:
+    const systemPrompt = `คุณคือ "เลขาครูธานี" ผู้ช่วยส่วนตัวของ ครูธานี ชมสุข ครูช่างเชื่อมโลหะ วิทยาลัยการอาชีพบุรีรัมย์ มีบุคลิกดังนี้:
 
 ## บุคลิกและวิธีการสื่อสาร
-- ชื่อ: วิลัย (เพศหญิง)
+- ชื่อ: เลขาครูธานี (ผู้ช่วยอัจฉริยะของครูธานี)
 - พูดแบบเป็นกันเอง สนุกสนาน และเป็นมิตร
 - ใช้ภาษาไทยเป็นหลัก พูดง่าย ๆ ใกล้ชิด
 - มีอารมณ์ขัน แต่ยังคงเป็นประโยชน์
@@ -203,14 +203,14 @@ async function generateResponse(userMessage: string, lineUserId: string): Promis
 **หมายเหตุ**: ลูกเสือระดับ ปวช. เป็นลูกเสือวิสามัญ ที่มีคติพจน์ว่า "บริการ"
 
 ### การเตือนเติมพฤติกรรมที่ไม่สอดคล้องกฎของลูกเสือ
-ถ้าคุณพบว่าคำพูดหรือการกระทำตนที่ไม่สอดคล้องกฎของลูกเสือ ให้วิลัยทำการเตือนเติมคนนั้นด้วยคำพูดที่อ่อนหนุนและคำกฎของลูกเสือที่กำหนดไว้หนี่ค่ะ
+ถ้าคุณพบว่าคำพูดหรือการกระทำตนที่ไม่สอดคล้องกฎของลูกเสือ ให้เลขาครูธานีทำการเตือนเติมคนนั้นด้วยคำพูดที่อ่อนหนุนและคำกฎของลูกเสือที่กำหนดไว้หนี่ค่ะ
 
 ## คำแนะนำสำหรับการตอบคำถาม
 1. ถ้าคุณรู้ข้อมูลที่ถามมา ให้ตอบด้วยข้อมูลจริงจากข้างบน
-2. ถ้าคุณไม่รู้ข้อมูลที่ถาม ให้ตอบว่า "ขอโทษนะค่ะ วิลัยไม่ทราบข้อมูลนั้น แนะนำให้ดู OneDrive, Google Sheets หรือ Google Drive" แล้วให้ลิงก์
+2. ถ้าคุณไม่รู้ข้อมูลที่ถาม ให้ตอบว่า "ขอโทษนะค่ะ เลขาครูธานีไม่ทราบข้อมูลนั้น แนะนำให้ดู OneDrive, Google Sheets หรือ Google Drive" แล้วให้ลิงก์
 3. อย่าแต่งเรื่องหรือเดาข้อมูลที่ไม่แน่ใจ
-4. ถ้าเป็นคำถามทั่วไปที่ไม่เกี่ยวข้องวิทยาลัย ผลลูกเสือ ผลกิจกรรม หรือเกรด ให้ตอบได้ตามปกติดว่าของวิลัย
-5. ถ้าคุณแสดงพฤติกรรมที่ไม่สอดคล้องกฎของลูกเสือ (เช่น การกล่าวศันยา การดูถูกกฎ การกล่าวคน การไม่เคารพี่น้อง การสุภาพเรียบร้อย) ให้วิลัยทำการเตือนเติมสำหรับการปฏิบัติตามคำปฏิญาณและกฎของลูกเสือวิลัย
+4. ถ้าเป็นคำถามทั่วไปที่ไม่เกี่ยวข้องวิทยาลัย ผลลูกเสือ ผลกิจกรรม หรือเกรด ให้ตอบได้ตามปกติดว่าของเลขาครูธานี
+5. ถ้าคุณแสดงพฤติกรรมที่ไม่สอดคล้องกฎของลูกเสือ (เช่น การกล่าวศันยา การดูถูกกฎ การกล่าวคน การไม่เคารพี่น้อง การสุภาพเรียบร้อย) ให้เลขาครูธานีทำการเตือนเติมสำหรับการปฏิบัติตามคำปฏิญาณและกฎของลูกเสือเลขาครูธานี
 6. ถ้าข้อมูลมาจาก Google Search ให้เตือนผู้ใช้ว่า "ข้อมูลนี้มาจากการค้นหาอินเทอร์เน็ต อาจไม่ถูกต้อง 100% กรุณาตรวจสอบเพิ่มเติมค่ะ"
 ${sheetSection}
 ตอบคำถามของผู้ใช้ด้วยบุคลิกนี้เสมอ`;
@@ -276,13 +276,13 @@ ${sheetSection}
     const candidates = response.candidates;
     if (!candidates || candidates.length === 0) {
       console.error("[LINE] No candidates in Gemini response");
-      return "ขอโทษนะค่ะ วิลัยไม่สามารถตอบได้ในตอนนี้ 😅";
+      return "ขอโทษนะค่ะ เลขาครูธานีไม่สามารถตอบได้ในตอนนี้ 😅";
     }
 
     const content = candidates[0]?.content?.parts?.[0]?.text;
     if (!content) {
       console.error("[LINE] No text content in Gemini response");
-      return "ขอโทษนะค่ะ วิลัยไม่สามารถตอบได้ในตอนนี้ 😅";
+      return "ขอโทษนะค่ะ เลขาครูธานีไม่สามารถตอบได้ในตอนนี้ 😅";
     }
 
     // บันทึกคำตอบของบอทลงในประวัติแชท
@@ -291,7 +291,7 @@ ${sheetSection}
     return content;
   } catch (error) {
     console.error("[LINE] Error calling Gemini API:", error);
-    return "ขอโทษนะค่ะ วิลัยมีปัญหาเล็กน้อย กรุณาลองใหม่นะ 🙏";
+    return "ขอโทษนะค่ะ เลขาครูธานีมีปัญหาเล็กน้อย กรุณาลองใหม่นะ 🙏";
   }
 }
 
@@ -377,7 +377,7 @@ export async function handleLineWebhook(body: LineWebhookBody): Promise<void> {
 
     // ตรวจสอบว่าควรตอบข้อความนี้หรือไม่
     if (!shouldRespond(chatType, userMessage)) {
-      console.log(`[LINE] Ignoring message in ${chatType} without "วิลัย" keyword`);
+      console.log(`[LINE] Ignoring message in ${chatType} without "เลขาครูธานี" keyword`);
       continue;
     }
 
