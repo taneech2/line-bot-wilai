@@ -97,8 +97,9 @@ function getChatType(source: LineEvent["source"]): "user" | "group" | "room" | n
  * @returns true ถ้ามีคำว่า "เลขาครูธานี" อยู่ด้วย
  */
 function containsWilaiKeyword(message: string): boolean {
-  // ตรวจสอบคำว่า "เลขาครูธานี" (case-insensitive)
-  return message.toLowerCase().includes("เลขาครูธานี");
+  // ตอบเมื่อมีคำว่า "เลขา" หรือ "เลขาครูธานี" หรือ "ครูธานี"
+  const msg = message.toLowerCase();
+  return msg.includes("เลขา") || msg.includes("ครูธานี");
 }
 
 /**
